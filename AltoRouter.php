@@ -33,12 +33,12 @@ class AltoRouter
      * @var array Array of default match types (regex helpers)
      */
     protected $matchTypes = [
-        'i'  => '[0-9]++',
-        'a'  => '[0-9A-Za-z]++',
-        'h'  => '[0-9A-Fa-f]++',
-        '*'  => '.+?',
+        'i' => '[0-9]++',
+        'a' => '[0-9A-Za-z]++',
+        'h' => '[0-9A-Fa-f]++',
+        '*' => '.+?',
         '**' => '.++',
-        ''   => '[^/\.]++'
+        '' => '[^/\.]++'
     ];
 
     /**
@@ -70,13 +70,13 @@ class AltoRouter
      * Add multiple routes at once from array in the following format:
      *
      *   $routes = [
-     *      [$method, $route, $target, $name]
+     *      [$method, $route, $target, $meta, $name]
      *   ];
      *
      * @param array $routes
      * @return void
-     * @author Koen Punt
      * @throws Exception
+     * @author Koen Punt
      */
     public function addRoutes($routes)
     {
@@ -117,10 +117,10 @@ class AltoRouter
      * @param string $name Optional name of this route. Supply if you want to reverse route this url in your application.
      * @throws Exception
      */
-    public function map($method, $route, $target, $name = null)
+    public function map($method, $route, $target, $meta = [], $name = null)
     {
 
-        $this->routes[] = [$method, $route, $target, $name];
+        $this->routes[] = [$method, $route, $target, $meta, $name];
 
         if ($name) {
             if (isset($this->namedRoutes[$name])) {
@@ -204,7 +204,7 @@ class AltoRouter
             $requestUrl = substr($requestUrl, 0, $strpos);
         }
 
-        $lastRequestUrlChar = $requestUrl ? $requestUrl[strlen($requestUrl)-1] : '';
+        $lastRequestUrlChar = $requestUrl ? $requestUrl[strlen($requestUrl) - 1] : '';
 
         // set Request Method if it isn't passed as a parameter
         if ($requestMethod === null) {
@@ -212,7 +212,7 @@ class AltoRouter
         }
 
         foreach ($this->routes as $handler) {
-            list($methods, $route, $target, $name) = $handler;
+            list($methods, $route, $target, $meta, $name) = $handler;
 
             $method_match = (stripos($methods, $requestMethod) !== false);
 
@@ -233,8 +233,8 @@ class AltoRouter
                 $match = strcmp($requestUrl, $route) === 0;
             } else {
                 // Compare longest non-param string with url before moving on to regex
-				// Check if last character before param is a slash, because it could be optional if param is optional too (see https://github.com/dannyvankooten/AltoRouter/issues/241)
-                if (strncmp($requestUrl, $route, $position) !== 0 && ($lastRequestUrlChar === '/' || $route[$position-1] !== '/')) {
+                // Check if last character before param is a slash, because it could be optional if param is optional too (see https://github.com/dannyvankooten/AltoRouter/issues/241)
+                if (strncmp($requestUrl, $route, $position) !== 0 && ($lastRequestUrlChar === '/' || $route[$position - 1] !== '/')) {
                     continue;
                 }
 
@@ -254,7 +254,8 @@ class AltoRouter
                 return [
                     'target' => $target,
                     'params' => $params,
-                    'name' => $name
+                    'name' => $name,
+                    'meta' => $meta
                 ];
             }
         }
@@ -285,14 +286,14 @@ class AltoRouter
 
                 //Older versions of PCRE require the 'P' in (?P<named>)
                 $pattern = '(?:'
-                        . ($pre !== '' ? $pre : null)
-                        . '('
-                        . ($param !== '' ? "?P<$param>" : null)
-                        . $type
-                        . ')'
-                        . $optional
-                        . ')'
-                        . $optional;
+                    . ($pre !== '' ? $pre : null)
+                    . '('
+                    . ($param !== '' ? "?P<$param>" : null)
+                    . $type
+                    . ')'
+                    . $optional
+                    . ')'
+                    . $optional;
 
                 $route = str_replace($block, $pattern, $route);
             }
