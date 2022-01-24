@@ -1,8 +1,8 @@
 {
-   "name": "altorouter/altorouter",
+   "name": "elipettingale/altorouter",
    "description": "A lightning fast router for PHP",
    "keywords": ["router", "routing", "lightweight"],
-   "homepage": "https://github.com/dannyvankooten/AltoRouter",
+   "homepage": "https://github.com/elipettingale/AltoRouter",
    "license": "MIT",
    "authors": [
       {
@@ -17,6 +17,10 @@
       {
          "name": "niahoo",
          "homepage": "https://github.com/niahoo"
+      },
+      {
+         "name": "Elliot Pettingale",
+         "homepage": "https://github.com/elipettingale"
       }
    ],
    "require": {
